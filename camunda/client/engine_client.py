@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 import requests
 
+from camunda.utils.utils import join
 from camunda.variables.variables import Variables
 
 logger = logging.getLogger(__name__)
@@ -49,10 +50,10 @@ class EngineClient:
         url_params = {}
         if process_key:
             url_params["processDefinitionKey"] = process_key
-        var_filter = self.join(variables, ',')
+        var_filter = join(variables, ',')
         if var_filter:
             url_params["variables"] = var_filter
-        tenant_ids_filter = self.join(tenant_ids, ',')
+        tenant_ids_filter = join(tenant_ids, ',')
         if tenant_ids_filter:
             url_params["tenantIdIn"] = tenant_ids_filter
         return url_params
@@ -61,6 +62,3 @@ class EngineClient:
         return {
             "Content-Type": "application/json"
         }
-
-    def join(self, list_of_values, separator):
-        return separator.join(str(v) for v in list_of_values)
