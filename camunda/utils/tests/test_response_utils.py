@@ -29,15 +29,15 @@ class TestRaiseExceptionIfResponseNotOk(TestCase):
 
     def test_get_response_error_message_no_error_type_no_message(self):
         data = {}
-        error_msg = get_response_error_message(self.__mock_response(HTTPStatus.BAD_REQUEST, data))
+        error_msg = get_response_error_message(HTTPStatus.BAD_REQUEST, data)
         self.assertEqual("received 400", error_msg)
 
     def test_get_response_error_message_only_type_no_msg(self):
         data = {'type': "InvalidRequestType", "message": ""}
-        error_msg = get_response_error_message(self.__mock_response(HTTPStatus.BAD_REQUEST, data))
+        error_msg = get_response_error_message(HTTPStatus.BAD_REQUEST, data)
         self.assertEqual("received 400 : InvalidRequestType", error_msg)
 
     def test_get_response_error_message_only_msg_no_type(self):
         data = {"message": "a detailed message"}
-        error_msg = get_response_error_message(self.__mock_response(HTTPStatus.BAD_REQUEST, data))
+        error_msg = get_response_error_message(HTTPStatus.BAD_REQUEST, data)
         self.assertEqual("received 400 : a detailed message", error_msg)

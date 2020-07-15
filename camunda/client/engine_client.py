@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 import requests
 
+from camunda.utils.response_utils import raise_exception_if_not_ok
 from camunda.utils.utils import join
 from camunda.variables.variables import Variables
 
@@ -28,23 +29,15 @@ class EngineClient:
         }
 
         response = requests.post(url, headers=self._get_headers(), json=body)
-        if response.status_code == HTTPStatus.OK:
-            return response.json()
-        elif response.status_code == HTTPStatus.NOT_FOUND or response.status_code == HTTPStatus.BAD_REQUEST:
-            raise Exception(response.json()["message"])
-        else:
-            response.raise_for_status()
+        raise_exception_if_not_ok(response)
+        return response.json()
 
     def get_process_instance(self, process_key=None, variables=frozenset([]), tenant_ids=frozenset([])):
         url = f"{self.engine_base_url}/process-instance"
         url_params = self.__get_process_instance_url_params(process_key, tenant_ids, variables)
         response = requests.get(url, headers=self._get_headers(), params=url_params)
-        if response.status_code == HTTPStatus.OK:
-            return response.json()
-        elif response.status_code == HTTPStatus.BAD_REQUEST:
-            raise Exception(response.json()["message"])
-        else:
-            response.raise_for_status()
+        raise_exception_if_not_ok(response)
+        return response.json()
 
     def __get_process_instance_url_params(self, process_key, tenant_ids, variables):
         url_params = {}
